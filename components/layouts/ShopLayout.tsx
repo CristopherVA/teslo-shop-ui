@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import React, { FC, ReactNode } from 'react'
+import React, { FC } from 'react'
 import { Navbar, SideMenu } from '../ui';
 
 interface Props {

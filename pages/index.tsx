@@ -1,14 +1,18 @@
-import { Typography } from '@mui/material'
 import type { NextPage } from 'next'
-
+import { Typography } from '@mui/material'
 import { ShopLayout } from '../components/layouts/'
-import styles from '../styles/Home.module.css'
+import { initialData } from '../database/products'
+import { ProductList } from '../components/products'
+
 
 const Home: NextPage = () => {
   return (
-    <ShopLayout  title={'Teslo - Shop - Home'} pageDescription={'Encuentra los mejores productos de Teslo aqui'}>
+    <ShopLayout   title={'Teslo - Shop - Home'} pageDescription={'Encuentra los mejores productos de Teslo aqui'}>
       <Typography variant='h1' component='h1' sx={{ mb: 1 }}>Tienda</Typography>
-      <Typography variant='h2' component='h3' sx={{ mb: 1 }}>Todos los productos</Typography>
+      <Typography variant='h2' component='h2' sx={{ mb: 1 }}>Todos los productos</Typography>
+
+      <ProductList products={initialData.products as any} />
+
     </ShopLayout>
   )
 }

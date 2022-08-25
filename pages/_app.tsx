@@ -1,16 +1,28 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import { ThemeProvider } from '@emotion/react'
-import { lightTheme } from '../themes'
-import { CssBaseline } from '@mui/material'
+import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import { ThemeProvider } from "@emotion/react";
+import { lightTheme } from "../themes";
+import { CssBaseline } from "@mui/material";
+import { SWRConfig } from "swr";
+import { UIProvider } from "../context";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider theme={lightTheme}>
-      <CssBaseline />
-      <Component {...pageProps} />
-    </ThemeProvider>
-  )
-}
+    <SWRConfig
+      value={{
+        // refreshInterval: 1000,
+        fetcher: (resource, init) =>
+          fetch(resource, init).then((res) => res.json()),
+      }}
+    >
+      <UIProvider>
+        <ThemeProvider theme={lightTheme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </UIProvider>
+    </SWRConfig>
+  );
+} 
 
-export default MyApp
+export default MyApp;

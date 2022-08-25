@@ -7,13 +7,11 @@ import { FullScreenLoading, ItemCounter } from "../../components/ui";
 import { IProduct } from "../../interfaces";
 import { dbProduct } from "../../database";
 
-
 interface Props {
-  product: IProduct
+  product: IProduct;
 }
 
-const ProductPage:FC<Props> = ({ product }) => {
-
+const ProductPage: FC<Props> = ({ product }) => {
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -61,26 +59,43 @@ const ProductPage:FC<Props> = ({ product }) => {
 
 export default ProductPage;
 
-// You should use getServerSideProps when:
-// - Only if you need to pre-render a page whose data must be fetched at request time
+// // You should use getServerSideProps when:
+// // - Only if you need to pre-render a page whose data must be fetched at request time
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+// export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
-  const { slug } = params as {slug: string};
-  const product = await dbProduct.getProductBySlug(slug)
+//   const { slug= '' } = params as {slug: string};
+//   const product = await dbProduct.getProductBySlug(slug)
 
-  if(!product) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false
-      }
-    }
-  }
+//   if(!product) {
+//     return {
+//       redirect: {
+//         destination: '/',
+//         permanent: false
+//       }
+//     }
+//   }
+
+//   return {
+//     props: {
+//       product,
+//     },
+//   };
+// };
+
+// You should use getStaticPaths if you’re statically pre-rendering pages that use dynamic routes
+import { GetStaticPaths } from "next";
+
+export const getStaticPaths: GetStaticPaths = async ({ params }) => {
+
+  const productSlugs = await dbProduct.getAllProductSlugs()
 
   return {
-    props: {
-      product,
-    },
+    paths: productSlugs.map(({slug}) => ({
+      params: {
+        slug
+      }
+    })),
+    fallback: "blocking",
   };
 };

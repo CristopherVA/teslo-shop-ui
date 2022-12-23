@@ -1,11 +1,11 @@
 import { ICartProduct } from "../../interfaces/cart";
-import { UIState } from "./CartProvider";
+import { CartState } from "./CartProvider";
 
 type CartActionType = 
   | { type: "[CART] - LoadCart from cookies | localstorage", payload: ICartProduct[] }
   | { type: "[CART] - Add Product", payload: ICartProduct }
 
-export const cartReducer = (state: UIState, action: CartActionType) => {
+export const cartReducer = (state: CartState, action: CartActionType) => {
   switch (action.type) {
     case '[CART] - LoadCart from cookies | localstorage':
       return {

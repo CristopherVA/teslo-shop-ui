@@ -1,10 +1,10 @@
+import React, { FC, useState } from "react";
 import { Grid, Box, Typography, Button, Chip } from "@mui/material";
-import React, { FC } from "react";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { ShopLayout } from "../../components/layouts";
 import { ProductSlideShow, SelectSize } from "../../components/products";
 import { FullScreenLoading, ItemCounter } from "../../components/ui";
-import { IProduct } from "../../interfaces";
+import { IProduct, ICartProduct } from "../../interfaces";
 import { dbProduct } from "../../database";
 
 interface Props {
@@ -12,6 +12,19 @@ interface Props {
 }
 
 const ProductPage: FC<Props> = ({ product }) => {
+  const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
+    _id: product._id,
+    images: product.images[0],
+    inStock: product.inStock,
+    price: product.price,
+    sizes: undefined,
+    slug: product.slug,
+    title: product.title,
+    type: product.type,
+    gender: product.gender,
+    quantity: 1,
+  });
+
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -40,11 +53,17 @@ const ProductPage: FC<Props> = ({ product }) => {
               />
             </Box>
 
-            <Button color="secondary" className="circular-btn">
-              Agregar al carrito
-            </Button>
-
-            {/* <Chip label="No al disponibles" color="error" variant="outlined" /> */}
+            {product.inStock > 0 ? (
+              <Button color="secondary" className="circular-btn">
+                Agregar al carrito
+              </Button>
+            ) : (
+              <Chip
+                label="No al disponibles"
+                color="error"
+                variant="outlined"
+              />
+            )}
 
             <Box sx={{ mt: 3 }}>
               <Typography variant="subtitle2">Description</Typography>
@@ -71,7 +90,6 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
   };
 };
 
-
 // You should use getStaticProps when:
 //- The data required to render the page is available at build time ahead of a user’s request.
 //- The data comes from a headless CMS.
@@ -97,6 +115,5 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     },
   };
 };
-
 
 export default ProductPage;

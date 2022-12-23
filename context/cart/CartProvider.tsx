@@ -2,11 +2,11 @@ import React, { FC, ReactElement, ReactNode, useReducer } from 'react'
 import { CartContext, cartReducer } from '.'
 import { ICartProduct } from '../../interfaces/cart'
 
-export interface UIState {
+export interface CartState {
    cart: ICartProduct[]
 }
 
-const CART_INITIAL_STATE: UIState = {
+const CART_INITIAL_STATE: CartState = {
    cart: []
 }
 
@@ -14,7 +14,7 @@ interface Props{
    children: ReactNode
 }
 
-export const UIProvider:FC<Props> = ({ children }) => {
+export const CartProvider:FC<Props> = ({ children }) => {
 
    const [state, dispatch ] = useReducer(cartReducer, CART_INITIAL_STATE)
 

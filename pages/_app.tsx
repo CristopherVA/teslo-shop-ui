@@ -4,7 +4,7 @@ import { ThemeProvider } from "@emotion/react";
 import { lightTheme } from "../themes";
 import { CssBaseline } from "@mui/material";
 import { SWRConfig } from "swr";
-import { UIProvider } from "../context";
+import { UIProvider, CartProvider } from "../context";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,14 +15,16 @@ function MyApp({ Component, pageProps }: AppProps) {
           fetch(resource, init).then((res) => res.json()),
       }}
     >
-      <UIProvider>
-        <ThemeProvider theme={lightTheme}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </UIProvider>
+      <CartProvider>
+        <UIProvider>
+          <ThemeProvider theme={lightTheme}>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </UIProvider>
+      </CartProvider>
     </SWRConfig>
   );
-} 
+}
 
 export default MyApp;

@@ -5,7 +5,7 @@ export interface ICartProduct {
    images: string;
    inStock: number;
    price: number;
-   sizes?: ISize;
+   size?: ISize;
    slug: string;
    title: string;
    type: IType;

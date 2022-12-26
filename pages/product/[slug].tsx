@@ -1,11 +1,13 @@
-import React, { FC, useState } from "react";
+import React, { FC, useContext, useState } from "react";
 import { Grid, Box, Typography, Button, Chip } from "@mui/material";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { CartContext } from "../../context";
 import { ShopLayout } from "../../components/layouts";
 import { ProductSlideShow, SelectSize } from "../../components/products";
 import { FullScreenLoading, ItemCounter } from "../../components/ui";
-import { IProduct, ICartProduct } from "../../interfaces";
+import { IProduct, ICartProduct, ISize } from "../../interfaces";
 import { dbProduct } from "../../database";
+import { useRouter } from "next/router";
 
 interface Props {
   product: IProduct;
@@ -17,13 +19,30 @@ const ProductPage: FC<Props> = ({ product }) => {
     images: product.images[0],
     inStock: product.inStock,
     price: product.price,
-    sizes: undefined,
+    size: undefined,
     slug: product.slug,
     title: product.title,
     type: product.type,
     gender: product.gender,
     quantity: 1,
   });
+
+  const { addProductToCart } = useContext(CartContext);
+  const route = useRouter()
+  const selectedSize = (size: ISize) => {
+    setTempCartProduct({ ...tempCartProduct, size });
+  };
+
+  const onUpdateQuantity = (quantity: number) => {
+    setTempCartProduct({ ...tempCartProduct, quantity });
+  };
+
+  const handleAddToCart = () => {
+    if (!tempCartProduct.size) return;
+    console.warn("hola");
+    addProductToCart(tempCartProduct);
+    route.push('/cart')
+  };
 
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
@@ -46,16 +65,27 @@ const ProductPage: FC<Props> = ({ product }) => {
 
             <Box sx={{ my: 2 }}>
               <Typography variant="subtitle2">Cantidad</Typography>
-              <ItemCounter />
+              <ItemCounter
+                currentValue={tempCartProduct.quantity}
+                updateQuantity={onUpdateQuantity}
+                maxValue={product.inStock > 5 ? 5 : product.inStock}
+              />
               <SelectSize
                 sizes={product.sizes}
-                // selectdSize={product.sizes[0]}
+                selectdSize={tempCartProduct.size}
+                onSelectedSize={(size) => selectedSize(size)}
               />
             </Box>
 
             {product.inStock > 0 ? (
-              <Button color="secondary" className="circular-btn">
-                Agregar al carrito
+              <Button
+                onClick={handleAddToCart}
+                color="secondary"
+                className="circular-btn"
+              >
+                {tempCartProduct.size
+                  ? "Agregar al carrito"
+                  : "Seleccione una talla"}
               </Button>
             ) : (
               <Chip
